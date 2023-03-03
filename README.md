@@ -1,3 +1,8 @@
+# React Native Android RecyclerView
+
+Forked from [Itangjie/react-native-android-recyclerview](https://github.com/Itangjie/react-native-android-recyclerview).
+Original README below.
+
 
 # react-native-android-recyclerview
 
