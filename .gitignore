@@ -1,1 +1,7 @@
 *.idea
+*.iml
+
+android/build
+android/.idea
+android/.gradle
+
