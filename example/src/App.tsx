@@ -21,9 +21,9 @@ const App = () => {
         <Text>Hello!</Text>
         <RecyclerView
           ref={ref}
-          style={styles.list}
+          style={[styles.list, styles.border]}
           dataSource={dataSource}
-          renderItem={(item, index) => {
+          renderItem={({item}, index) => {
             return (
               <View style={[styles.border, styles.card, styles.center]}>
                 <Text style={styles.text}>{item.text}</Text>
