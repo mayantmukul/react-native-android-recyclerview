@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -54,6 +55,7 @@ public class RNRecycleview extends RecyclerView {
         private ReactListAdapter mAdapter;
         private int mLastMeasuredWidth;
         private int mLastMeasuredHeight;
+        private Boolean isScrollingDown;
 
         public RecyclableWrapperViewGroup(Context context, ReactListAdapter adapter) {
             super(context);
@@ -131,24 +133,36 @@ public class RNRecycleview extends RecyclerView {
         private final List<RNRecycleviewItemview> mViews = new ArrayList<>();
         private final RNRecycleview mScrollView;
         private int mItemCount = 0;
+        private boolean mIsScrollingDown = true;
 
+        private OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy > 0) {
+                    mIsScrollingDown = false;
+                } else {
+                    mIsScrollingDown = true;
+                }
+            }
+        };
         public ReactListAdapter(RNRecycleview scrollView) {
             mScrollView = scrollView;
         }
 
         public void addView(RNRecycleviewItemview child, int index) {
-            mViews.add(index, child);
-
-            final int itemIndex = child.getItemIndex();
-
-            notifyItemChanged(itemIndex);
+            if(mIsScrollingDown) {
+                mViews.add(index, child);
+                final int itemIndex = child.getItemIndex();
+                notifyItemChanged(itemIndex);
+            }
         }
 
         public void removeViewAt(int index) {
-            RNRecycleviewItemview child = mViews.get(index);
-            if (child != null) {
-                mViews.remove(index);
-            }
+//            RNRecycleviewItemview child = mViews.get(index);
+//            if (child != null) {
+//                mViews.remove(index);
+//            }
         }
 
         public int getViewCount() {
@@ -175,12 +189,12 @@ public class RNRecycleview extends RecyclerView {
         @Override
         public void onViewRecycled(ConcreteViewHolder holder) {
             super.onViewRecycled(holder);
-            ((RecyclableWrapperViewGroup) holder.itemView).removeAllViews();
+            //((RecyclableWrapperViewGroup) holder.itemView).removeAllViews();
         }
 
         @Override
         public int getItemCount() {
-            return mItemCount;
+            return mViews.size();
         }
 
         public void setItemCount(int itemCount) {
@@ -205,6 +219,7 @@ public class RNRecycleview extends RecyclerView {
     private boolean mDragging;
     private int mFirstVisibleIndex, mLastVisibleIndex;
 
+
     private ReactContext getReactContext() {
         return (ReactContext) ((ContextThemeWrapper) getContext()).getBaseContext();
     }
@@ -213,18 +228,18 @@ public class RNRecycleview extends RecyclerView {
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
         if (mOnScrollDispatchHelper.onScrollChanged(l, t)) {
-            getReactContext().getNativeModule(UIManagerModule.class).getEventDispatcher()
-                    .dispatchEvent(ScrollEvent.obtain(
-                            getId(),
-                            ScrollEventType.SCROLL,
-                            0, /* offsetX = 0, horizontal scrolling only */
-                            computeVerticalScrollOffset(),
-                            mOnScrollDispatchHelper.getXFlingVelocity(),
-                            mOnScrollDispatchHelper.getYFlingVelocity(),
-                            getWidth(),
-                            computeVerticalScrollRange(),
-                            getWidth(),
-                            getHeight()));
+//            getReactContext().getNativeModule(UIManagerModule.class).getEventDispatcher()
+//                    .dispatchEvent(ScrollEvent.obtain(
+//                            getId(),
+//                            ScrollEventType.SCROLL,
+//                            0, /* offsetX = 0, horizontal scrolling only */
+//                            computeVerticalScrollOffset(),
+//                            mOnScrollDispatchHelper.getXFlingVelocity(),
+//                            mOnScrollDispatchHelper.getYFlingVelocity(),
+//                            getWidth(),
+//                            computeVerticalScrollRange(),
+//                            getWidth(),
+//                            getHeight()));
         }
 
         final int firstIndex = ((LinearLayoutManager) getLayoutManager()).findFirstVisibleItemPosition();
@@ -232,12 +247,12 @@ public class RNRecycleview extends RecyclerView {
 
         if (firstIndex != mFirstVisibleIndex || lastIndex != mLastVisibleIndex) {
 
-            getReactContext().getNativeModule(UIManagerModule.class).getEventDispatcher()
-                    .dispatchEvent(new VisibleItemsChangeEvent(
-                            getId(),
-                            SystemClock.nanoTime(),
-                            firstIndex,
-                            lastIndex));
+//            getReactContext().getNativeModule(UIManagerModule.class).getEventDispatcher()
+//                    .dispatchEvent(new VisibleItemsChangeEvent(
+//                            getId(),
+//                            SystemClock.nanoTime(),
+//                            firstIndex,
+//                            lastIndex));
 
             mFirstVisibleIndex = firstIndex;
             mLastVisibleIndex = lastIndex;
@@ -258,9 +273,9 @@ public class RNRecycleview extends RecyclerView {
         ((ReactListAdapter) getAdapter()).addView(child, index);
     }
 
-    void removeViewFromAdapter(int index) {
-        ((ReactListAdapter) getAdapter()).removeViewAt(index);
-    }
+//    void removeViewFromAdapter(int index) {
+//        ((ReactListAdapter) getAdapter()).removeViewAt(index);
+//    }
 
     View getChildAtFromAdapter(int index) {
         return ((ReactListAdapter) getAdapter()).getView(index);
@@ -285,18 +300,18 @@ public class RNRecycleview extends RecyclerView {
         if (super.onInterceptTouchEvent(ev)) {
             NativeGestureUtil.notifyNativeGestureStarted(this, ev);
             mDragging = true;
-            getReactContext().getNativeModule(UIManagerModule.class).getEventDispatcher()
-                    .dispatchEvent(ScrollEvent.obtain(
-                            getId(),
-                            ScrollEventType.BEGIN_DRAG,
-                            0, /* offsetX = 0, horizontal scrolling only */
-                            computeVerticalScrollOffset(),
-                            0, // xVelocity
-                            0, // yVelocity
-                            getWidth(),
-                            computeVerticalScrollRange(),
-                            getWidth(),
-                            getHeight()));
+//            getReactContext().getNativeModule(UIManagerModule.class).getEventDispatcher()
+//                    .dispatchEvent(ScrollEvent.obtain(
+//                            getId(),
+//                            ScrollEventType.BEGIN_DRAG,
+//                            0, /* offsetX = 0, horizontal scrolling only */
+//                            computeVerticalScrollOffset(),
+//                            0, // xVelocity
+//                            0, // yVelocity
+//                            getWidth(),
+//                            computeVerticalScrollRange(),
+//                            getWidth(),
+//                            getHeight()));
             return true;
         }
 
@@ -309,18 +324,18 @@ public class RNRecycleview extends RecyclerView {
         if (action == MotionEvent.ACTION_UP && mDragging) {
             mDragging = false;
 //            mVelocityHelper.calculateVelocity(ev);
-            getReactContext().getNativeModule(UIManagerModule.class).getEventDispatcher()
-                    .dispatchEvent(ScrollEvent.obtain(
-                            getId(),
-                            ScrollEventType.END_DRAG,
-                            0, /* offsetX = 0, horizontal scrolling only */
-                            computeVerticalScrollOffset(),
-                            ev.getX(),
-                            ev.getY(),
-                            getWidth(),
-                            computeVerticalScrollRange(),
-                            getWidth(),
-                            getHeight()));
+//            getReactContext().getNativeModule(UIManagerModule.class).getEventDispatcher()
+//                    .dispatchEvent(ScrollEvent.obtain(
+//                            getId(),
+//                            ScrollEventType.END_DRAG,
+//                            0, /* offsetX = 0, horizontal scrolling only */
+//                            computeVerticalScrollOffset(),
+//                            ev.getX(),
+//                            ev.getY(),
+//                            getWidth(),
+//                            computeVerticalScrollRange(),
+//                            getWidth(),
+//                            getHeight()));
         }
         return super.onTouchEvent(ev);
     }

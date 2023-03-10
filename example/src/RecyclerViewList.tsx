@@ -64,7 +64,8 @@ type NativeRecyclerViewItemProps = React.PropsWithChildren<{
   style: ViewStyle
   itemIndex: number
 }>
-const NativeRecyclerViewItem = requireNativeComponent<NativeRecyclerViewItemProps>('RCTRecycleviewItemview');
+
+export const NativeRecyclerViewItem = requireNativeComponent<NativeRecyclerViewItemProps>('RCTRecycleviewItemview');
 
 type RecyclerViewProps = {
     dataSource: DataSource,
