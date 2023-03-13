@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useRef, useState} from 'react';
+import React from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -10,9 +10,6 @@ import {
   ViewStyle,
   StyleProp,
 } from 'react-native';
-
-import {RecyclerView} from './RecyclerViewList';
-import DataSource from './DataSource';
 
 const DATA = Array(500)
   .fill(null)
@@ -32,6 +29,7 @@ const List = () => {
       <View style={[styles.flex, styles.center, styles.border]}>
         <Text>Flat List!</Text>
         <FlatList
+          debug
           disableVirtualization={false}
           data={DATA}
           renderItem={({item, index}) => {
@@ -55,33 +53,24 @@ const List = () => {
       <Text>Custom List!</Text>
       <CustomNativeRecyclerView style={{flex: 1, backgroundColor: 'yellow'}}>
         {Array.from({length: 500}).map((_item, i) => (
-          <CustomNativeRecyclerViewItem
-            style={{height:100, width: 300, backgroundColor: 'pink'}}>
-            <Text style={styles.text}>{DATA[i].text}</Text>
-            <Text style={styles.text}>{DATA[i].text}</Text>
-            <Text style={styles.text}>{DATA[i].text}</Text>
-            <Text style={styles.text}>{DATA[i].text}</Text>
-            <Text style={styles.text}>{DATA[i].text}</Text>
+          <CustomNativeRecyclerViewItem>
+            <View
+              style={{
+                height: 300,
+                width: 300,
+                backgroundColor: 'pink',
+                borderWidth: 4,
+                borderColor: 'black',
+              }}>
+              <Text style={styles.text}>{DATA[i].text}</Text>
+              <Text style={styles.text}>{DATA[i].text}</Text>
+              <Text style={styles.text}>{DATA[i].text}</Text>
+              <Text style={styles.text}>{DATA[i].text}</Text>
+              <Text style={styles.text}>{DATA[i].text}</Text>
+            </View>
           </CustomNativeRecyclerViewItem>
         ))}
       </CustomNativeRecyclerView>
-
-      {/* <RecyclerView 
-        ref={ref}
-        style={[styles.list, styles.border]}
-        dataSource={dataSource}
-        renderItem={({item}, index) => {
-          return (
-            <View style={[styles.border, styles.card, styles.center]}>
-              <Text style={styles.text}>{item.text}</Text>
-              <Text style={styles.text}>{item.text}</Text>
-              <Text style={styles.text}>{item.text}</Text>
-              <Text style={styles.text}>{item.text}</Text>
-              <Text style={styles.text}>{item.text}</Text>
-            </View>
-          );
-        }}
-      /> */}
     </View>
   );
 };
@@ -126,11 +115,11 @@ const styles = StyleSheet.create({
 export default App;
 
 const CustomNativeRecyclerView =
-  requireNativeComponent<CustomNativeRecyclerViewInterface>('RCTRecycleview');
+  requireNativeComponent<CustomNativeRecyclerViewInterface>('RNDDreamList');
 
 const CustomNativeRecyclerViewItem =
   requireNativeComponent<CustomNativeRecyclerItemViewInterface>(
-    'RCTRecycleviewItemview',
+    'RNDDreamListItem',
   );
 
 export interface CustomNativeRecyclerViewInterface {

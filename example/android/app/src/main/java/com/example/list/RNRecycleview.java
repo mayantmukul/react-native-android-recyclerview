@@ -186,11 +186,11 @@ public class RNRecycleview extends RecyclerView {
             }
         }
 
-        @Override
-        public void onViewRecycled(ConcreteViewHolder holder) {
-            super.onViewRecycled(holder);
-            //((RecyclableWrapperViewGroup) holder.itemView).removeAllViews();
-        }
+//        @Override
+//        public void onViewRecycled(ConcreteViewHolder holder) {
+//            super.onViewRecycled(holder);
+//            //((RecyclableWrapperViewGroup) holder.itemView).removeAllViews();
+//        }
 
         @Override
         public int getItemCount() {

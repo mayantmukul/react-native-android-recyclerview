@@ -27,7 +27,9 @@ public class RNRecycleviewPackage implements ReactPackage {
     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
         return Arrays.<ViewManager>asList(
                 new CustomRecycleViewManager(),
-                new RNRecycleviewItemviewManager()
+                new CustomItemViewManager(),
+                new RNRecycleviewItemviewManager(),
+                new RNRecycleviewManager()
         );
     }
 }
