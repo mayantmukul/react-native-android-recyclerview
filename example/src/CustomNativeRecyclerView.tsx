@@ -4,6 +4,8 @@ import {requireNativeComponent} from 'react-native';
 
 type RNDListViewProps = PropsWithChildren<{
   style: StyleProp<ViewStyle>;
+  size: number
+  onNextBatch: () => void
 }>;
 
 export const RNDListView =

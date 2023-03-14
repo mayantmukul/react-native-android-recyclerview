@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import {
   RNDListView
@@ -8,28 +8,43 @@ import JSScrollView from './JSScrollView';
 
 const USE_JS_LIST = false;
 
-const DATA = Array(1)
+const DATA = Array(40)
   .fill(null)
   .map((_, idx) => ({
     key: idx.toString(),
     text: `Card #${idx}`,
   }));
 
+function clamp(x: number, min: number, max: number) {
+  return x > max ? max : x < min ? min : x;
+}
+
+const INITIAL_SLICE = 10
+const PER_BATCH = 5
+
 function List() {
+  const [slice, setSlice] = useState(INITIAL_SLICE)
+
   if (USE_JS_LIST) {
     return <JSScrollView />;
   }
 
   return (
     <RNDListView
-      style={[styles.flex, styles.border, styles.list]}>
-      {/* DATA.map((item) => (
+      size={DATA.length}
+      style={[styles.flex, styles.list]}
+      onNextBatch={() => {
+        if (slice !== DATA.length) {
+          setSlice((s) => clamp(s + PER_BATCH, 0, DATA.length))
+        }
+      }}>
+      {DATA.slice(0, slice).map((item) => (
         <View
           key={item.key}
-          style={[styles.center, styles.card]}>
+          style={[styles.center, styles.card, styles.border]}>
           <Text style={styles.text}>{item.text}</Text>
         </View>
-      )) */}
+      ))}
     </RNDListView>
   );
 }
@@ -51,7 +66,7 @@ const styles = StyleSheet.create({
   },
   list: {
     width: 400,
-    height: 100,
+    // height: 1000,
     backgroundColor: 'tomato'
   },
   center: {
@@ -60,11 +75,11 @@ const styles = StyleSheet.create({
   },
   card: {
     height: 100,
-    backgroundColor: 'tomato',
+    backgroundColor: 'aqua',
   },
   border: {
-    borderColor: 'aqua',
-    borderWidth: 4,
+    borderColor: 'red',
+    borderWidth: 2,
   },
   text: {
     color: 'black',
